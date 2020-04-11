@@ -38,9 +38,10 @@ public class Consumer extends Thread {
 
 			try (BufferedReader reader = new BufferedReader(new FileReader(filmovi));) {
 				String lineFilmSaMinutima = reader.readLine(); // linija sa zaglavljem
-
-				while ((lineFilmSaMinutima = reader.readLine()) != null) {
+				int i=0;
+				while ((lineFilmSaMinutima = reader.readLine())!= null && i<10) {
 					// ucitaj film po film.
+					i++;
 					String[] elementiNiza = lineFilmSaMinutima.split("\t");
 					if (!("\\N".equals(elementiNiza[7]))) {
 						String idFilmaIzTabeleMinuti = elementiNiza[0];// id mi treba //

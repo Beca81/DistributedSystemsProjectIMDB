@@ -21,7 +21,7 @@ public class Combiner extends Thread {
 	public void run() {
 		
 		Integer ukupniMinuti = 0;
-		String gotovo = null;
+		//String gotovo = null;
 		String reziser = null;
 		String porukaOdConsumera = null;
 		Map<String, Integer> map = new HashMap<String, Integer>();
