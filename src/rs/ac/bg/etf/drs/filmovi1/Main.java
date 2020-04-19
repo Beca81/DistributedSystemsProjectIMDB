@@ -6,14 +6,15 @@ public class Main {
 
 	public static void main(String[] args) {
 		int cap = 10;
-		int n = 2; // broj potrosaca
+		int n = 5; // broj potrosaca
 		String filmovi = "C:\\Users\\brank_000\\Desktop\\IT\\MASTER IT\\data1.tsv";
 		String reziseriPutanja ="C:\\Users\\brank_000\\Desktop\\IT\\MASTER IT\\data.tsv";
 		
 		Buffer buffer1 = new Buffer(cap);
 		Buffer buffer2 = new Buffer(cap);
 		Buffer buffer3 = new Buffer(cap);
-
+		
+		Barrier barrier = new Barrier(n);
 
 		long start = System.currentTimeMillis();
 		System.out.println("Pocetak: " + start);
@@ -27,7 +28,7 @@ public class Main {
 		combiner.start();
 
 		for (int i = 0; i < n; i++) {
-			Consumer consumer = new Consumer(buffer1, combiner, buffer2, filmovi);
+			Consumer consumer = new Consumer(buffer1, barrier, buffer2,  filmovi);
 			consumer.setName("Consumer" + i);
 			consumer.start();
 		}

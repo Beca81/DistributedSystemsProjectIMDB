@@ -5,16 +5,18 @@ import java.io.FileReader;
 import java.util.HashMap;
 import java.util.Map;
 
+import rs.ac.bg.etf.drs.filmovi1.Barrier;
+
 public class Consumer extends Thread {
 
 	Buffer bufferInListaFilmovaSaReziserima, bufferOut; // sta klasa sadrzi
-	Combiner combiner;
+	Barrier barrier;
 	String filmovi;
 
-	public Consumer(Buffer bufferIn, Combiner combiner, Buffer bufferOut, String filmovi) {
+	public Consumer(Buffer bufferIn, Barrier barrier, Buffer bufferOut, String filmovi) {
 		super();
 		this.bufferInListaFilmovaSaReziserima = bufferIn;// koja treba da bude vrednost prilikom stvaranja klase
-		this.combiner = combiner;
+		this.barrier = barrier;
 		this.bufferOut = bufferOut;
 		this.filmovi = filmovi;
 	}
@@ -44,14 +46,15 @@ public class Consumer extends Thread {
 					i++;
 					String[] elementiNiza = lineFilmSaMinutima.split("\t");
 					if (!("\\N".equals(elementiNiza[7]))) {
-						String idFilmaIzTabeleMinuti = elementiNiza[0];// id mi treba //
+						String idFilmaIzTabeleMinuti = elementiNiza[0];
+						String minuti = elementiNiza[7];// id mi treba //
 						// tconst titleType primaryTitle originalTitle isAdult startYear endYear
 						// runtimeMinutes genres
 						// tt0000001 short Carmencita Carmencita 0 1894 \N 1 Documentary,Short
 						// tt0000002 short Le clown et ses chiens Le clown et ses chiens 0 1892 \N 5
 						// Animation,Short
 						//
-						trajanjeFilmova.put(idFilmaIzTabeleMinuti, elementiNiza[7]);
+						trajanjeFilmova.put(idFilmaIzTabeleMinuti, minuti);
 
 					}
 				}
@@ -73,9 +76,9 @@ public class Consumer extends Thread {
 		while ((line = bufferInListaFilmovaSaReziserima.get()) != null) {
 			brojObradjenih++;
 
-			if ((limit > 0) && (brojObradjenih == limit)) {
-				break;
-			}
+			/*
+			 * if ((limit > 0) && (brojObradjenih == limit)) { break; }
+			 */
 
 			// Line = jedan film
 			// Izgled linije (primer): 12312124<TAB>rez1,rez2,rez3<TAB>pisac1,pisac2
@@ -98,7 +101,6 @@ public class Consumer extends Thread {
 				// reziseri, minut i idFilma
 
 				// 1. da se minuti pretvore u String
-				// 2. Da se polj
 
 				int numberOfItems = reziseri.length;
 
@@ -111,6 +113,7 @@ public class Consumer extends Thread {
 
 		}
 
+		barrier.sync(); 
 		bufferOut.put("KRAJ");
 		System.out.println("Consumer run is finished.");
 

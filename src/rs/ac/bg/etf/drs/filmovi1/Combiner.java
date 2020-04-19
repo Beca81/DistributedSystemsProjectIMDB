@@ -19,6 +19,13 @@ public class Combiner extends Thread {
 
 	@Override
 	public void run() {
+//		String line = null;
+//		while ((line = bufferIn.get()) != null) {
+//			bufferOut.put(line);
+//		}
+//		
+//		
+//		bufferOut.put(line); // buffer.end
 		
 		Integer ukupniMinuti = 0;
 		//String gotovo = null;

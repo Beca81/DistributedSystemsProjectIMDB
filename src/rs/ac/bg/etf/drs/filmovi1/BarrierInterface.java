@@ -13,6 +13,6 @@ public interface BarrierInterface {
 	 * @param currentMax maksimalni broj (rezisera) koji je nit consumer-a nasla
 	 * @return stvarno maksimalni broj (rezisera)
 	 */
-	int sync(int currentMax);
+	public void sync();
 
 }
