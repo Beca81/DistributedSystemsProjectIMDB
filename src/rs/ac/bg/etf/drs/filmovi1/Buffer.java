@@ -23,8 +23,7 @@ public class Buffer implements BufferInterface {
 	@Override
 	public synchronized void put(String line) {
 		if (line == null) {
-			// ako pristigne null, to nam oznacava da nece vise elemenata dolaziti i da je
-			// kraj
+			// ako pristigne null, to nam oznacava da nece vise elemenata dolaziti - kraj
 			end = true;
 		} else {
 			while (buffer.size() == cap) {
@@ -39,10 +38,9 @@ public class Buffer implements BufferInterface {
 
 		notifyAll();
 		// Ako je dosao null, a bafer je bio prazan, neophodno je probuditi consumere
-		// koji su eventualno cekali na element, kako bi videli da je kraj.
-		// Najjednostavnija implementacija nam je sa notifyAll, koja svakako probudi sve
+		// koji su eventualno cekali na element, kako bi videli da je kraj - probudi sve
 		// na kraju.
-		// Za vezbu, probati napraviti implementaciju pomocu semafora.
+
 	}
 
 	/**

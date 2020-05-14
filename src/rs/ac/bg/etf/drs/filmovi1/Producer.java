@@ -18,10 +18,10 @@ public class Producer extends Thread {
 	public void run() {
 
 		try (BufferedReader reader = new BufferedReader(new FileReader(reziseri));) {
-			String line = reader.readLine(); // linija sa zaglavljem
-			int i=0;
-			while ((line = reader.readLine()) != null && i<10) {
-				i++;
+			String line = reader.readLine();
+			// int i=0;
+			while ((line = reader.readLine()) != null) {// && i<10
+				// i++;
 				buffer.put(line);
 
 			}

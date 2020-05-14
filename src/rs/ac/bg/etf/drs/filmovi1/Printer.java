@@ -1,7 +1,7 @@
 package rs.ac.bg.etf.drs.filmovi1;
 
 /**
- * Klasa koja uzima iz bafera filmove i ispisuje ih.
+ * Klasa koja uzima iz bafera rezultat i ispisuje ga.
  */
 public class Printer extends Thread {
 
@@ -15,7 +15,7 @@ public class Printer extends Thread {
 	public void run() {
 		String line = null;
 		while ((line = buffer.get()) != null) {
-			System.out.println(line);
+			//System.out.println(line);
 		}
 	}
 
