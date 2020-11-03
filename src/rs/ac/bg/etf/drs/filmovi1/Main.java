@@ -2,82 +2,189 @@ package rs.ac.bg.etf.drs.filmovi1;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+
 import java.util.HashMap;
+
 import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class Main {
-	public static Map<String, String> ucitajHashMap(String path) {
+	
+	public static Map<String, Integer> trajanjeFilmova;
 
-		Map<String, String> trajanjeFilmova = new HashMap<String, String>();
+	public static class Reziseri {
 
-		try (BufferedReader reader = new BufferedReader(new FileReader(path));) {
-			String lineFilmSaMinutima = reader.readLine();
-			// int i = 0;
-			while ((lineFilmSaMinutima = reader.readLine()) != null) {// && i < 10
-				// i++;
-				String[] elementiNiza = lineFilmSaMinutima.split("\t");
-				if (!("\\N".equals(elementiNiza[7]))) {
-					String idFilmaIzTabeleMinuti = elementiNiza[0];// tconst
-					String minuti = elementiNiza[7];// runtimeMinutes
-					// tconst titleType primaryTitle originalTitle isAdult startYear endYear
-					// runtimeMinutes genres
-					// tt0000001 short Carmencita Carmencita 0 1894 \N 1 Documentary,Short
-					// tt0000002 short Le clown et ses chiens Le clown et ses chiens 0 1892 \N 5
-					// Animation,Short
+		
+		String reziseri;
+		String idfilma;
+		
 
-					trajanjeFilmova.put(idFilmaIzTabeleMinuti, minuti);
+		public Reziseri(String s) { 
+		
+		try { 	
+			String[] data = s.split("\t");
+			
+			reziseri = data[1];
+			idfilma = data[0];
+			
+		} catch (Exception e) { }
+		} 
+	}
+	
+	public static class ReziseriNiz {
 
-				}
+		
+		String idFilma;
+		String[] reziseriOdvojeno;
+		
 
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
+		public ReziseriNiz(Reziseri r) { 
+		
+		try { 	
+			reziseriOdvojeno = r.reziseri.split(",");
+			idFilma = r.idfilma;
+			
+
+		} catch (Exception e) { }
+		} 
+	}
+	
+	public static class ReziserIdfilmaObj {
+		
+		String reziser;
+		String idfilma;
+		
+	}
+	
+	public static ReziserIdfilmaObj[] VratiNizReziserIdfilmaObj(ReziseriNiz r)
+	{
+		//kreira niz objekata tipa [reziser,idfilma]
+		int brojRezisera = r.reziseriOdvojeno.length;
+		ReziserIdfilmaObj[] niz = new ReziserIdfilmaObj[brojRezisera];
+		for (int i = 0; i < brojRezisera; i++) {
+			niz[i] = new ReziserIdfilmaObj();
+			niz[i].idfilma=r.idFilma;
+			niz[i].reziser=r.reziseriOdvojeno[i];
 		}
+		return niz;
+	}
 
-		System.out.println("Kesiranje u memoriji je uradjeno.");
+	
+	public static String VratiRezisere(Reziseri obj)
+	{
+		String niz = obj.reziseri;
+		
+		return niz;
+	}
+	
+	public static class ReziserMinuti{
+		String reziser;
+		int minuti;
+		
+		public ReziserMinuti(String s) { 
+			
+			try { 	
+				reziser=s;		
+				minuti=10;
+		
+			} catch (Exception e) { }
+			} 
+	}
+	
+	public static class FRM{
+		String idFilma;
+		String reziser;
+		int minuti;
+		
+		public FRM(ReziserIdfilmaObj obj) { 
+			
+			try { 
+				idFilma=obj.idfilma;
+				reziser=obj.reziser;
+				minuti=trajanjeFilmova.getOrDefault(idFilma, 0);
+		
+			} catch (Exception e) { }
+			} 
+	}
+	
+	public static void UcitajHashMapuTrajanja(String putanja)
+	{
+		trajanjeFilmova = new HashMap<String, Integer>();
+		// ucitaj drugi fajl i ubaci u memoriju tabelu <IDFILMA, TRAJANJE FILMA>
+		// Ostavili smo minuti string posto ne radimo manipulaciju sa vremenom vec samo
+		// prebacujemo dalje.
+		// 6M * 10BAJTOVA+4BAJTA = 6M * 14 = 80MB tabela u memoriji
+		{
+			// 1. reader za ucitavanje
+			// 2. primer iz producera.
+			// 3. umesto u buffer, parsiraj
+			// 3.1. // u komentar kako izgelda linija
+			// 3.2. // split /....
+			// 4. ubaci u mapu
 
-		return trajanjeFilmova;
+			try (BufferedReader reader = new BufferedReader(new FileReader(putanja));) {
+				String lineFilmSaMinutima = reader.readLine(); // linija sa zaglavljem
+				int i=0;
+				while ((lineFilmSaMinutima = reader.readLine())!= null) {
+					// ucitaj film po film.
+					i++;
+					String[] elementiNiza = lineFilmSaMinutima.split("\t");
+					if (!("\\N".equals(elementiNiza[7]))) {
+						String idFilmaIzTabeleMinuti = elementiNiza[0];// id mi treba //
+						// tconst titleType primaryTitle originalTitle isAdult startYear endYear
+						// runtimeMinutes genres
+						// tt0000001 short Carmencita Carmencita 0 1894 \N 1 Documentary,Short
+						// tt0000002 short Le clown et ses chiens Le clown et ses chiens 0 1892 \N 5
+						// Animation,Short
+						//
+						trajanjeFilmova.put(idFilmaIzTabeleMinuti, new Integer(elementiNiza[7]));
 
+					}
+				}
+			} catch (Exception e) { 
+			}
+		}
+		
 	}
 
 	public static void main(String[] args) {
-		int cap = 30;
-		int n = 2;
-		String filmovi = "C:\\Users\\brank_000\\Desktop\\IT\\MASTER IT\\data1.tsv";
-		String reziseriPutanja = "C:\\Users\\brank_000\\Desktop\\IT\\MASTER IT\\data.tsv";
 
-		Buffer buffer1 = new Buffer(cap);
-		Buffer buffer2 = new Buffer(cap);
-		Buffer buffer3 = new Buffer(cap);
+		String filmovi = "E:\\Projekti\\DRS_Reziseri\\Data\\data_filmovi_small.tsv";
+		String reziseriPutanja = "E:\\Projekti\\DRS_Reziseri\\Data\\data_film_reziseri_pisci_small.tsv";
+		//String filmovi = "C:\\Users\\brank_000\\Desktop\\IT\\MASTER IT\\data_filmovi.tsv";
+		//String reziseriPutanja = "C:\\Users\\brank_000\\Desktop\\IT\\MASTER IT\\data_film_reziseri_pisci.tsv";
 
-		Barrier barrier = new Barrier(n);
-
-		Map<String, String> trajanjeFilmovaMapa = ucitajHashMap(filmovi);
+		// ucitaj hashmapu u polje trajanjeFilmova (polje je dostupno iz svih static metoda)
+		UcitajHashMapuTrajanja(filmovi);
 
 		long start = System.currentTimeMillis();
 		System.out.println("Pocetak: " + start);
 
-		Producer producer = new Producer(reziseriPutanja, buffer1);
-		producer.setName("Producer");
-		producer.start();
+		try (Stream<String> streamRedoviFajla= Files.lines(Paths.get(reziseriPutanja), StandardCharsets.ISO_8859_1)) {
+			
 
-		Combiner combiner = new Combiner(buffer2, buffer3);
-		combiner.setName("Combiner");
-		combiner.start();
+			Stream<Reziseri> streamReziseriObj = streamRedoviFajla.map(s -> new Reziseri(s));
+			
+			Stream<ReziseriNiz> streamNizStringovaReziseri = streamReziseriObj.map(s ->new ReziseriNiz(s));
+			
+			Stream<ReziserIdfilmaObj[]> streamReziserIdfilmaObjNiz = streamNizStringovaReziseri.map(s -> VratiNizReziserIdfilmaObj(s));
+			
+			Stream<ReziserIdfilmaObj> streamFlattenReziseri = streamReziserIdfilmaObjNiz.flatMap(obj -> Stream.of(obj)) ;	
+			//streamFlattenReziseri.limit(50).forEach(s-> System.out.println(s.idfilma + " " + s.reziser));
+			
+			Stream<FRM> streamFilmReziserMinuti = streamFlattenReziseri.map(s -> new FRM(s)).filter(s->s.minuti>0);
+			//streamFilmReziserMinuti.limit(50).forEach(s-> System.out.println(s.idFilma + " " + s.reziser + " " + s.minuti));
+					
+			streamFilmReziserMinuti.collect(Collectors.groupingBy(rm -> rm.reziser, Collectors.summingInt(rm->rm.minuti))).entrySet().stream().sorted(Map.Entry.comparingByValue()).
+			forEach(s-> System.out.println(s.getKey() + "\t" + s.getValue()));
+			
+							  
 
-		for (int i = 0; i < n; i++) {
-			Consumer consumer = new Consumer(buffer1, barrier, buffer2, filmovi, trajanjeFilmovaMapa);
-			consumer.setName("Consumer" + i);
-			consumer.start();
-		}
-
-		Printer printer = new Printer(buffer3);
-		printer.setName("Printer");
-		printer.start();
-
-		try {
-			printer.join();
-		} catch (InterruptedException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 
@@ -87,3 +194,4 @@ public class Main {
 		System.out.println("Trajanje: " + (duration / 1000.) + " s");
 	}
 }
+

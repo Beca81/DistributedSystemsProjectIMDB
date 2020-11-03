@@ -1,4 +1,4 @@
-package rs.ac.bg.etf.drs.filmovi1;
+package rs.ac.bg.etf.drs.filmoviDz_Barijera;
 
 import java.io.BufferedReader;
 import java.io.FileReader;

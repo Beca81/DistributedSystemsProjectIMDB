@@ -1,4 +1,4 @@
-package rs.ac.bg.etf.drs.filmovi1;
+package rs.ac.bg.etf.drs.filmoviDz_Barijera;
 
 /**
  * Klasa koja uzima iz bafera rezultat i ispisuje ga.
@@ -15,7 +15,7 @@ public class Printer extends Thread {
 	public void run() {
 		String line = null;
 		while ((line = buffer.get()) != null) {
-			//System.out.println(line);
+			System.out.println(line);
 		}
 	}
 

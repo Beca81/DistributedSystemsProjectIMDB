@@ -1,9 +1,9 @@
-package rs.ac.bg.etf.drs.filmovi1;
+package rs.ac.bg.etf.drs.filmoviDz_Barijera;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import rs.ac.bg.etf.drs.filmovi1.Barrier;
+import rs.ac.bg.etf.drs.filmoviDz_Barijera.Barrier;
 
 public class Consumer extends Thread {
 
